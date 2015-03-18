@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>Image transfer</title>
+<script type="text/javascript" src="jquery-1.4.min.js"></script>
+<script type="text/javascript" src="jquery-ui-1.7.2.custom.min.js"></script>
+<script type="text/javascript" language="javascript">
+	$(document).ready(function() {
+		/**
+		 *	Using transfer effect when large image is clicked
+		 */
+		$(".large").click(function () {  		
+			var thumbRel = $(this).attr("rel");		
+			$(this).effect("transfer",{ to: $(".thumbnail img[rel='"+thumbRel+"']") }, 1000);
+		});
+		
+		/**
+		 * Using transfer effect when thumbnail image is clicked
+		 */
+		$(".thumb").click(function () { 
+			/**
+			 * Remove class 'current' if exists
+			 */
+			$(".thumbnail [class^='thumb']").removeClass("current");
+			
+			/**
+			 * Add class 'current' to highlight the selected thumbnail image
+			 */
+			$(this).addClass("current");
+			
+			/**
+			 * Change the 'rel' of large image with that of the thumbnail image
+			 */
+			$(".large").attr("rel", $(this).attr("rel"));				
+			
+			/**
+			 * Use transfer effect
+			 */
+			$(this).effect("transfer",{ to: $(".large") }, 1000);
+			
+			/**
+			 * Fade out the current large image
+			 */
+			$(".large").animate({opacity: 0.3}, 1000);
+			
+			/**
+			 * The functions inside queue() is used after the above animate and other functions get completed
+			 */
+			$(this).queue(function(){
+				/**
+				 * Change the src of large image
+				 * Here, thumb image is hills-thumb.jpg then large image is hills.jpg
+				 */
+				$(".large").attr("src", $(this).attr("src").replace("-thumb", ""));
+				
+				/**
+				 * Fade in the large image
+				 */
+				$(".large").animate({opacity: 1}, 1000);
+				$(this).dequeue();					
+			});		
+		});		
+	});
+</script>
+<style>
+	.main { 
+		padding: 4px; 		 
+		position: relative; 
+	}
+	.thumbnail { 
+		padding: 10px;         
+		position: relative; 
+	}
+	.thumbnail .thumb {
+		padding: 2px;
+	}
+	.current {
+		border: 1px solid red;
+	}	
+	.ui-effects-transfer { 
+		border: 2px solid black; 
+	}
+</style>
+</head>
+<body>
+<div align="center">
+   <p><strong>Click thumbnail or large image:</strong></p>
+   <div class="main">
+		<img class="large" src="hills.jpg" alt="image" rel="hills" />
+   </div>
+   <div class="thumbnail">
+	   <img class="thumb" src="hills-thumb.jpg" alt="image" rel="hills" />
+	   <img class="thumb" src="lilies-thumb.jpg" alt="image" rel="lilies" />
+	   <img class="thumb" src="sunset-thumb.jpg" alt="image" rel="sunset" />
+	   <img class="thumb" src="winter-thumb.jpg" alt="image" rel="winter" />
+   </div>
+</div>
+</body>
+</html>
